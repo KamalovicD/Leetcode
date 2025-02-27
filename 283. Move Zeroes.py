@@ -1,3 +1,5 @@
+from typing import List
+
 class Solution:
     def moveZeroes(self, nums: List[int]) -> None:
         # 1. Nol bo'lmagan elementlarning joylashtiriladigan indeksini saqlaydigan ko'rsatkich
