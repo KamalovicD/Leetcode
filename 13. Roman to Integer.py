@@ -1,33 +1,39 @@
 class Solution:
     def romanToInt(self, s: str) -> int:
-        # 1. Rim raqamlarining har bir belgisining to'g'ri butun qiymatini aniqlash uchun lug'at tuzamiz.
-        roman_values = {
-            'I': 1,  # I belgisi 1 ga teng
-            'V': 5,  # V belgisi 5 ga teng
-            'X': 10,  # X belgisi 10 ga teng
-            'L': 50,  # L belgisi 50 ga teng
-            'C': 100,  # C belgisi 100 ga teng
-            'D': 500,  # D belgisi 500 ga teng
-            'M': 1000  # M belgisi 1000 ga teng
+        # 1. Har bir Rim raqami va uning qiymatini belgilovchi lug‘at yaratiladi.
+        roman_map = {
+            'I': 1,  # I ning qiymati 1
+            'V': 5,  # V ning qiymati 5
+            'X': 10,  # X ning qiymati 10
+            'L': 50,  # L ning qiymati 50
+            'C': 100,  # C ning qiymati 100
+            'D': 500,  # D ning qiymati 500
+            'M': 1000  # M ning qiymati 1000
         }
 
-        total = 0  # Yakuniy natijani jamlaydigan o'zgaruvchi, boshlanishida 0 ga teng
-        i = 0  # String bo'ylab yurish uchun indeks; i hozirgi belgi pozitsiyasini bildiradi
+        # 2. Umumiy yig‘indini (natijaviy butun son) 0 dan boshlaymiz.
+        total = 0
 
-        # 2. While tsikli yordamida string (s) bo'ylab iteratsiya qilamiz
-        while i < len(s):
-            # 3. Agar keyingi belgi mavjud bo'lsa va hozirgi belgi qiymati keyingi belgidan kichik bo'lsa,
-            #    demak biz subtraction qoidasi (ayirish) holatini uchratdik.
-            #    Masalan, "IV" da I (1) V (5) dan kichik, shuning uchun 5 - 1 = 4 bo'ladi.
-            if i + 1 < len(s) and roman_values[s[i]] < roman_values[s[i + 1]]:
-                total += roman_values[s[i + 1]] - roman_values[s[i]]
-                # Bu holatda biz ikki belgini ham ishlatdik, shuning uchun indeksni 2 ga oshiramiz.
-                i += 2
+        # 3. Avvalgi qiymatni (oldingi qaralgan raqamning qiymatini) saqlash uchun o'zgaruvchi; dastlab 0 ga tenglashtiramiz.
+        prev = 0
+
+        # 4. s stringini orqadan-to‘g‘ri (teskari tartibda) tekshiramiz.
+        #    Misol uchun, s = "MCMXCIV" bo'lsa, bu "VICXMC M" kabi emas, balki eng so‘nggi belgidan to boshigacha ko‘rib chiqiladi.
+        for ch in s[::-1]:
+            # Hozirgi harfni roman_map lug‘atidan olib, qiymatini aniqlaymiz.
+            value = roman_map[ch]
+
+            # 5. Agar hozirgi raqamning qiymati oldingi (ya’ni, chap tomondagi) raqam qiymatidan kichik bo'lsa,
+            #    bu holda ayirma holati sodir bo‘ladi. Misol uchun, "IV" uchun I ning qiymati (1) V (5) dan kichik,
+            #    shuning uchun 1 ni ayiramiz.
+            if value < prev:
+                total -= value
             else:
-                # 4. Aks holda, oddiy qo'shish amalini bajarib, joriy belgining qiymatini natijaga qo'shamiz.
-                total += roman_values[s[i]]
-                # Faqat bitta belgi ishlatilgani sababli indeksni 1 ga oshiramiz.
-                i += 1
+                # Aks holda, qiymatni umumiy yig‘indiga qo‘shamiz.
+                total += value
 
-        # 5. Natija sifatida hisoblangan butun qiymat (total) ni qaytaramiz.
+            # 6. Hozirgi qiymatni prev ga saqlaymiz, shunda keyingi iteratsiyada solishtirishda foydalanamiz.
+            prev = value
+
+        # 7. Natijada olingan yig‘indi, ya’ni butun son, qaytariladi.
         return total
