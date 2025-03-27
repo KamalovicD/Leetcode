@@ -2,26 +2,26 @@ from typing import List
 
 class Solution:
     def countDays(self, days: int, meetings: List[List[int]]) -> int:
-        # 1-qadam: Uchrashuvlarni boshlanish sanasi bo‘yicha tartiblaymiz
+        # 1. Uchrashuvlarni boshlanish kuniga qarab saralash
         meetings.sort()
 
-        # 2-qadam: Birlashgan uchrashuvlar ro‘yxatini hosil qilamiz
-        merged_meetings = []
+        # 2. Ishlash mumkin bo'lgan kunlar hisoblagichi
+        available_days = 0
+
+        # 3. Oxirgi band bo'lgan kunni saqlash
+        last_meeting_end = 0
+
+        # 4. Barcha uchrashuvlarni ko'rib chiqamiz
         for start, end in meetings:
-            if merged_meetings and merged_meetings[-1][1] >= start:
-                # Agar oldingi uchrashuv hozirgi uchrashuv bilan kesishsa, birlashtiramiz
-                merged_meetings[-1][1] = max(merged_meetings[-1][1], end)
-            else:
-                # Aks holda, yangi uchrashuv sifatida qo‘shamiz
-                merged_meetings.append([start, end])
+            # Agar mavjud uchrashuv avvalgi uchrashuvdan keyin boshlansa, bo'sh kunlarni hisoblaymiz
+            if start > last_meeting_end + 1:
+                available_days += start - (last_meeting_end + 1)
 
-        # 3-qadam: Bo‘sh kunlarni hisoblash
-        free_days = 0
-        last_end = 0
+            # Oxirgi uchrashuv tugagan kunni yangilaymiz
+            last_meeting_end = max(last_meeting_end, end)
 
-        for start, end in merged_meetings:
-            free_days += (start - last_end - 1)  # Oldingi uchrashuv tugaganidan keyingi bo‘sh kunlarni qo‘shamiz
-            last_end = end  # Oxirgi band kunni yangilaymiz
+        # 5. Agar oxirgi uchrashuvdan keyin hali bo'sh kunlar bo'lsa, ularni hisoblaymiz
+        if last_meeting_end < days:
+            available_days += days - last_meeting_end
 
-        free_days += (days - last_end)  # Oxirgi uchrashuvdan keyin qolgan bo‘sh kunlarni qo‘shamiz
-        return free_days
+        return available_days
